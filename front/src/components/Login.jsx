@@ -1,5 +1,14 @@
 import { useState } from "react";
 
+/**
+ * Pantalla de login — primera vista que ve el usuario.
+ * Valida que el email sea del dominio corporativo antes de permitir el acceso.
+ * No verifica contraseña — es una validación figurativa para el MVP.
+ * Props:
+ * - onLogin: función que recibe el email y activa la pantalla de carga antes del Dashboard
+ */
+
+// Estilos definidos fuera del componente para no recrearlos en cada render
 const styles = {
   wrapper: {
     width: "100vw",
@@ -12,7 +21,7 @@ const styles = {
     position: "relative",
     overflow: "hidden",
   },
-  // Contenedor Horizontal Bento
+  // Contenedor split — lado izquierdo decorativo, lado derecho con el form
   mainContainer: {
     position: "relative",
     zIndex: 1,
@@ -25,19 +34,17 @@ const styles = {
     overflow: "hidden",
     boxShadow: "0 25px 60px rgba(0, 0, 0, 0.12)",
   },
-  // Columna Izquierda
   leftSide: {
     flex: 1,
-    backgroundColor: "#ffb3b3", 
+    backgroundColor: "#ffb3b3",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     padding: "50px",
     position: "relative",
   },
-  // Columna Derecha
   rightSide: {
-    flex: 1.2,
+    flex: 1.2, // Ligeramente más ancho que el lado izquierdo para el formulario
     backgroundColor: "white",
     display: "flex",
     flexDirection: "column",
@@ -51,13 +58,6 @@ const styles = {
     lineHeight: "1",
     zIndex: 2,
     letterSpacing: "-1.5px",
-  },
-  logo: {
-    fontSize: "22px",
-    fontWeight: "800",
-    color: "#1a1a1a",
-    marginBottom: "40px",
-    letterSpacing: "-0.8px",
   },
   inputWrapper: {
     width: "100%",
@@ -86,9 +86,10 @@ const styles = {
     boxSizing: "border-box",
     transition: "all 0.25s ease",
   },
+  // Se aplica cuando el input tiene foco — reemplaza el fondo gris por blanco con borde rosa
   inputFocus: {
     backgroundColor: "#fff",
-    borderColor: "#ffb3b3", // Acento con tu nuevo color
+    borderColor: "#ffb3b3",
     boxShadow: "0 8px 20px rgba(255, 179, 179, 0.25)",
   },
   button: {
@@ -109,13 +110,13 @@ const styles = {
     transform: "translateY(-2px)",
     boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
   },
-  // Decoración orgánica
+  // Círculo decorativo en la esquina del lado rosa — puramente visual
   circleDecoration: {
     position: "absolute",
     width: "180px",
     height: "180px",
     borderRadius: "50%",
-    backgroundColor: "rgba(255, 255, 255, 0.25)", // Blanco traslúcido sobre el rosa
+    backgroundColor: "rgba(255, 255, 255, 0.25)",
     top: "-60px",
     right: "-40px",
   },
@@ -131,22 +132,27 @@ function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  // Estados de foco para aplicar el estilo inputFocus a cada campo por separado
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [buttonHovered, setButtonHovered] = useState(false);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Evita que el form recargue la página
+    // Única validación real: el dominio del email debe ser corporativo
     if (!email.endsWith("@proyecto.com")) {
       setError("El email debe ser @proyecto.com");
       return;
     }
-    onLogin(email);
+    onLogin(email); // Pasa el email al App.jsx que activa el loader y luego el Dashboard
   };
 
   return (
     <div style={styles.wrapper}>
       <div style={styles.mainContainer}>
+
+        {/* Lado izquierdo — decorativo, sin interacción */}
         <div style={styles.leftSide}>
           <div style={styles.circleDecoration} />
           <div style={styles.welcomeText}>
@@ -154,32 +160,23 @@ function Login({ onLogin }) {
           </div>
         </div>
 
+        {/* Lado derecho — formulario de login */}
         <div style={styles.rightSide}>
           <img
             src="/src/assets/proyecto2.png"
             alt="Logo"
-            style={{
-              height: "45px",
-              objectFit: "contain",
-              marginBottom: "40px",
-            }}
+            style={{ height: "45px", objectFit: "contain", marginBottom: "40px" }}
           />
 
           <form onSubmit={handleSubmit}>
             <div style={styles.inputWrapper}>
               <label style={styles.label}>Email</label>
               <input
-                style={{
-                  ...styles.input,
-                  ...(emailFocused ? styles.inputFocus : {}),
-                }}
+                style={{ ...styles.input, ...(emailFocused ? styles.inputFocus : {}) }}
                 type="email"
                 placeholder="usuario@proyecto.com"
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setError("");
-                }}
+                onChange={(e) => { setEmail(e.target.value); setError(""); }}
                 onFocus={() => setEmailFocused(true)}
                 onBlur={() => setEmailFocused(false)}
                 required
@@ -189,10 +186,7 @@ function Login({ onLogin }) {
             <div style={styles.inputWrapper}>
               <label style={styles.label}>Contraseña</label>
               <input
-                style={{
-                  ...styles.input,
-                  ...(passwordFocused ? styles.inputFocus : {}),
-                }}
+                style={{ ...styles.input, ...(passwordFocused ? styles.inputFocus : {}) }}
                 type="password"
                 placeholder="••••••••"
                 value={password}
@@ -203,25 +197,17 @@ function Login({ onLogin }) {
               />
             </div>
 
+            {/* Error visible solo cuando el dominio del email no es el correcto */}
             {error && (
-              <p
-                style={{
-                  fontSize: "12px",
-                  color: "#ff4444",
-                  marginBottom: "15px",
-                  paddingLeft: "18px",
-                }}
-              >
+              <p style={{ fontSize: "12px", color: "#ff4444", marginBottom: "15px", paddingLeft: "18px" }}>
                 {error}
               </p>
             )}
 
+            {/* spread operator combina el estilo base con el hover si corresponde */}
             <button
               type="submit"
-              style={{
-                ...styles.button,
-                ...(buttonHovered ? styles.buttonHover : {}),
-              }}
+              style={{ ...styles.button, ...(buttonHovered ? styles.buttonHover : {}) }}
               onMouseEnter={() => setButtonHovered(true)}
               onMouseLeave={() => setButtonHovered(false)}
             >

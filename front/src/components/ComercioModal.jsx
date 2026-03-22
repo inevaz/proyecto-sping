@@ -1,39 +1,55 @@
 import { useState } from "react";
 import { create } from "../services/comercioService";
 
+//componente para crear un nuevo comercio
+//recibe dos props:
+// - onClose: función para cerrar el modal
+// - onSuccess: función que se ejecuta después de guardar exitosamente (refresca la tabla)
+
 function ComercioModal({ onClose, onSuccess }) {
+  //state del form: un objeto con todos los campos inicializados vacíos
   const [form, setForm] = useState({
     nombre: "",
     rut: "",
     rubro: "",
     direccion: "",
     email: "",
-    activo: true,
+    activo: true, //todo comercio nuevo arranca activo por default
   });
   const [error, setError] = useState("");
   const [cargando, setCargando] = useState(false);
 
+
+   //Maneja los cambios en cualquier input del formulario.
+   //[e.target.name] usa el atributo "name" del input como clave dinámica, así un solo handler sirve para todos los campos en vez de tener uno por campo.
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); //evita que el form recargue la página al submitear
+
+    //validación front antes de llamar al back 
     if (!form.nombre || !form.rut) {
       setError("Nombre y RUT son obligatorios");
       return;
     }
+
     setCargando(true);
     try {
-      await create(form);
-      onSuccess();
-      onClose();
+      await create(form); //llama al POST /api/comercios con los datos del form
+      onSuccess(); //refresca la tabla de comercios en el Dashboard
+      onClose(); //cierra el modal
     } catch (err) {
       setError("Error al guardar el comercio");
     }
     setCargando(false);
   };
 
+ 
+   //def de los campos del formulario como array.
+   //permite renderizarlos todos con un solo map en vez de repetir el JSX de cada input
+   //required marca los campos obligatorios para mostrar el asterisco amarillo.
   const fields = [
     {
       name: "nombre",
@@ -52,6 +68,7 @@ function ComercioModal({ onClose, onSuccess }) {
   ];
 
   return (
+    //fondo oscuro semitransparente: al clickear fuera del modal se cierra
     <div
       style={{
         position: "fixed",
@@ -65,6 +82,7 @@ function ComercioModal({ onClose, onSuccess }) {
       }}
       onClick={onClose}
     >
+      {/*stopPropagation evita que el click dentro del modal llegue al fondo y lo cierre */}
       <div
         style={{
           backgroundColor: "#ffffff",
@@ -118,11 +136,11 @@ function ComercioModal({ onClose, onSuccess }) {
           </button>
         </div>
 
-        {/* Formulario */}
         <form
           onSubmit={handleSubmit}
           style={{ display: "flex", flexDirection: "column", gap: "14px" }}
         >
+          {/* renderizado dinámico de los campos usando el array fields */}
           {fields.map(({ name, label, placeholder, required }) => (
             <div
               key={name}
@@ -142,7 +160,7 @@ function ComercioModal({ onClose, onSuccess }) {
               </label>
               <input
                 name={name}
-                type={name === "email" ? "email" : "text"}
+                type={name === "email" ? "email" : "text"} //solo el campo email usa type="email" para validación nativa del browser
                 placeholder={placeholder}
                 value={form[name]}
                 onChange={handleChange}
@@ -169,7 +187,6 @@ function ComercioModal({ onClose, onSuccess }) {
             </p>
           )}
 
-          {/* Botones */}
           <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
             <button
               type="button"
@@ -188,6 +205,7 @@ function ComercioModal({ onClose, onSuccess }) {
             >
               Cancelar
             </button>
+            {/* disabled evita doble submit si el usuario hace click rápido */}
             <button
               type="submit"
               disabled={cargando}

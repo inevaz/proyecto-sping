@@ -1,4 +1,4 @@
-// boton sacado de uiverse
+//componente boton sacado de uiverse
 import styled from "styled-components";
 
 const Button = ({ text, onClick, disabled }) => {
