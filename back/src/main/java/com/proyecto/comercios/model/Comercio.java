@@ -1,45 +1,47 @@
-// Modelo de entidad para comercios
 package com.proyecto.comercios.model;
 
-import jakarta.persistence.*; // Anotaciones JPA para persistencia
-import java.time.LocalDateTime; // Fecha y hora
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
-// Marca la clase como entidad JPA y la mapea a la tabla "comercios"
+/**
+entity representa un comercio afiliado en la base de datos.
+hibernate lee esta clase y genera/mantiene la tabla "comercios" en PostgreSQL automáticamente.
+ */
 @Entity
 @Table(name = "comercios")
 public class Comercio {
 
-    // Clave primaria autoincremental
+    //id autoincremental, hibernate lo asigna solo al guardar un nuevo comercio
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Nombre del comercio (obligatorio)
-    @Column(nullable = false)
+    @Column(nullable = false) //si viene vacío, la db rechaza el registro
     private String nombre;
 
-    // RUT único del comercio (obligatorio)
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true) //restricción de que no puede haber dos comercios con el mismo RUT
     private String rut;
 
-    // Rubro, dirección, email y estado (activo por defecto)
+    //campos opcionales, pueden ser null sin problema
     private String rubro;
     private String direccion;
     private String email;
-    private Boolean activo = true;
 
-    // Fecha de carga del registro
+    private Boolean activo = true; //todo comercio nuevo arranca como activo
+
     @Column(name = "fecha_carga")
     private LocalDateTime fechaCarga;
 
-    // Asigna la fecha actual antes de guardar el registro
+    /**
+     se ejecuta automáticamente antes de cada INSERT.
+     lo que hace es asignar la fecha y hora actual al campo fechaCarga, para registrar cuándo se creó el comercio.
+     */
     @PrePersist
     public void prePersist() {
         this.fechaCarga = LocalDateTime.now();
     }
 
-    // Métodos para acceder y modificar los atributos
-    // Getters y Setters
+    // Getters y Setters — necesarios para que Hibernate y Spring puedan leer/escribir los campos
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
