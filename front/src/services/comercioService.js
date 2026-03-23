@@ -1,4 +1,4 @@
-const BASE_URL = "https://proyecto-sping-production.up.railway.app/api/comercios";
+const BASE_URL = "http://localhost:8081/api/comercios";
 
 export const getAll = async () => {
     const res = await fetch(BASE_URL);
