@@ -163,7 +163,7 @@ function Login({ onLogin }) {
         {/* Lado derecho — formulario de login */}
         <div style={styles.rightSide}>
           <img
-            src="/src/assets/proyecto2.png"
+            src="/proyecto2.png"
             alt="Logo"
             style={{ height: "45px", objectFit: "contain", marginBottom: "40px" }}
           />

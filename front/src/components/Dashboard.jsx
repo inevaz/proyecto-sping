@@ -58,7 +58,7 @@ function Dashboard({ usuario, onLogout }) {
 
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "left", gap: "10px", marginBottom: "45px" }}>
-          <img src="/src/assets/proyecto.png" alt="Logo" style={{ height: "37px", objectFit: "contain" }} />
+          <img src="/proyecto.png" alt="Logo" style={{ height: "37px", objectFit: "contain" }} />
         </div>
 
         {/* Items de navegación */}
