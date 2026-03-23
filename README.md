@@ -7,6 +7,36 @@ React (Frontend)  →  Spring Boot (Backend)  →  PostgreSQL (Base de datos)
 
 El frontend se comunica con el backend mediante una API REST. El backend contiene toda la lógica de negocio y se conecta a la base de datos a través de JPA/Hibernate.
 
+# Cómo ejecutar con Docker
+
+### Requisitos previos
+- Docker Desktop instalado y funcionando
+
+### Pasos
+
+1. Cloná el repositorio
+
+2. Levantá todos los servicios con un solo comando:
+```bash
+docker-compose up --build
+```
+3. Esperás que termine de buildear (la primera vez demora unos minutos). Cuando veas en los logs:
+```
+Started ComerciosApplication
+```
+ya está todo listo.
+
+4. Abrí el browser y entrá a:
+```
+http://localhost
+```
+
+5. Ingresá con cualquier email `@proyecto.com` y cualquier contraseña.
+   
+### deploy front:
+Si querés ver el deploy del front (no va a tener funcionamiento real), podés entrar a: 
+https://proyecto-sping.vercel.app/
+
 ## Stack 
 
 **Backend**
