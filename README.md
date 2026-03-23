@@ -76,3 +76,5 @@ El archivo `.xlsx` debe tener las siguientes columnas en la primera fila:
 | nombre | rut | rubro | direccion | email |
 |--------|-----|-------|-----------|-------|
 | Supermercado A | 210050030016 | Supermercado | Calle X esq. calle Y | contacto@supermercadoA.com.uy |
+
+(importante incluir los cabezales de las columnas, por como está desarrollada la lógica de lectura de archivos Excel)
